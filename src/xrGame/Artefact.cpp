@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Artefact.h"
+#include "../xrCore/EngineExternal.h
 #include "../xrPhysics/PhysicsShell.h"
 #include "PhysicsShellHolder.h"
 #include "game_cl_base.h"
@@ -269,6 +270,15 @@ void CArtefact::UpdateWorkload		(u32 dt)
 	// custom-logic
 	if(!CAttachableItem::enabled())
 		UpdateCLChild					();
+	
+	// --- Artefact Discharge (TLR-style) ---
+    const static bool enableDischarge = EngineExternal()[EEngineExternalGame::EnableArtefactDischarge];
+    if (enableDischarge && H_Parent() && m_fDegradationRate > 0.0f && GetCondition() > 0.0f)
+    {
+        const float fTimeDelta = float(dt) / 1000.0f;
+        ChangeCondition(-m_fDegradationRate * fTimeDelta);
+    }
+    // --------------------------------------
 	
 }
 
